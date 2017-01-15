@@ -25,6 +25,7 @@ type VkClient struct {
 
 	Users *usersService
 	Audio *audioService
+	Video *videoService
 }
 
 func NewVkClient(token string) *VkClient {
@@ -35,6 +36,7 @@ func NewVkClient(token string) *VkClient {
 
 	client.Users = &usersService{client: client}
 	client.Audio = &audioService{client: client}
+	client.Video = &videoService{client: client}
 
 	return client
 }
