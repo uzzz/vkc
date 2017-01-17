@@ -18,6 +18,10 @@ type User struct {
 		Id    int    `json:"id"`
 		Title string `json:"title"`
 	} `json:"city"`
+	Country struct {
+		Id    int    `json:"id"`
+		Title string `json:"title"`
+	} `json:"country"`
 	Counters struct {
 		Audios int `json:"audios"`
 		Videos int `json:"videos"`
@@ -49,7 +53,7 @@ type usersService struct {
 func (s *usersService) Get(id int) (*User, error) {
 	params := map[string]string{
 		"user_ids": strconv.Itoa(id),
-		"fields":   "city,counters",
+		"fields":   "city,country,counters",
 	}
 	req, err := s.client.NewRequest("users.get", params)
 	if err != nil {
