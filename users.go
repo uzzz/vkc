@@ -14,11 +14,11 @@ type User struct {
 	FirstName   string `json:"first_name"`
 	LastName    string `json:"last_name"`
 	Deactivated string `json:"deactivated"`
-	City        struct {
+	City        *struct {
 		Id    int    `json:"id"`
 		Title string `json:"title"`
 	} `json:"city"`
-	Country struct {
+	Country *struct {
 		Id    int    `json:"id"`
 		Title string `json:"title"`
 	} `json:"country"`
@@ -26,6 +26,18 @@ type User struct {
 		Audios int `json:"audios"`
 		Videos int `json:"videos"`
 	} `json:"counters"`
+	Bdate    string `json:"bdate"`
+	LastSeen struct {
+		Time int `json:"time"`
+	} `json:"last_seen"`
+	HomeTown    *string `json:"home_town"`
+	Sex         *int    `json:"sex"`
+	Relation    *int    `json:"relation"`
+	CanSeeAudio int     `json:"can_see_audio"`
+	Occupation  *struct {
+		Type string `json:"type"`
+		Name string `json:"name"`
+	}
 }
 
 func (u *User) IdBytes() []byte {
@@ -53,7 +65,7 @@ type usersService struct {
 func (s *usersService) Get(id int) (*User, error) {
 	params := map[string]string{
 		"user_ids": strconv.Itoa(id),
-		"fields":   "city,country,counters",
+		"fields":   "city,country,counters,bdate,last_seen,home_town,sex,relation,can_see_audio,occupation",
 	}
 	req, err := s.client.NewRequest("users.get", params)
 	if err != nil {
@@ -79,7 +91,7 @@ var users = [];
 var ids = [{{ range $i, $e := $ -}}{{if $i}}, {{end}}{{ $e }}{{ end }}];
 var i = 0;
 while (i < ids.length) {
-    var response = API.users.get({"user_ids": ids[i], "fields": "city,counters"});
+    var response = API.users.get({"user_ids": ids[i], "fields": "city,country,bdate,last_seen,counters,home_town,sex,relation,can_see_audio,occupation"});
     users.push(response[0]);
     i = i + 1;
 }
