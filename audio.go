@@ -3,7 +3,6 @@ package vkc
 import (
 	"fmt"
 	"strconv"
-	"text/template"
 )
 
 const (
