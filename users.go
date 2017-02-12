@@ -9,20 +9,24 @@ import (
 	"text/template"
 )
 
+type Country struct {
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+}
+
+type City struct {
+	Id    int    `json:"id"`
+	Title string `json:"title"`
+}
+
 type User struct {
-	Id          int    `json:"id"`
-	FirstName   string `json:"first_name"`
-	LastName    string `json:"last_name"`
-	Deactivated string `json:"deactivated"`
-	City        *struct {
-		Id    int    `json:"id"`
-		Title string `json:"title"`
-	} `json:"city"`
-	Country *struct {
-		Id    int    `json:"id"`
-		Title string `json:"title"`
-	} `json:"country"`
-	Counters struct {
+	Id          int      `json:"id"`
+	FirstName   string   `json:"first_name"`
+	LastName    string   `json:"last_name"`
+	Deactivated string   `json:"deactivated"`
+	City        *City    `json:"city"`
+	Country     *Country `json:"country"`
+	Counters    struct {
 		Audios int `json:"audios"`
 		Videos int `json:"videos"`
 	} `json:"counters"`

@@ -3,6 +3,7 @@ package vkc
 import (
 	"fmt"
 	"strconv"
+	"text/template"
 )
 
 const (
@@ -62,7 +63,6 @@ func (s *audioService) GetAll(userId int) ([]*Audio, error) {
 			break
 		}
 		offset += maxAudioPerRequest
-
 	}
 
 	return audio, nil

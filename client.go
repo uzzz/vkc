@@ -23,6 +23,9 @@ type VkClient struct {
 	Token      string
 	UserAgent  string
 
+	captchaSid  string
+	captchaCode string
+
 	Users *usersService
 	Audio *audioService
 	Video *videoService
@@ -48,6 +51,12 @@ func (c *VkClient) NewRequest(method string, params map[string]string) (*http.Re
 	data.Set("v", apiVersion)
 	if c.Token != "" {
 		data.Set("access_token", c.Token)
+	}
+	if c.captchaCode != "" && c.captchaSid != "" {
+		data.Set("captcha_sid", c.captchaSid)
+		data.Set("captcha_code", c.captchaCode)
+		c.captchaSid = ""
+		c.captchaCode = ""
 	}
 	for k, v := range params {
 		data.Set(k, v)
@@ -92,10 +101,6 @@ func (c *VkClient) Do(req *http.Request, v interface{}) (*http.Response, error) 
 		return resp, err
 	}
 
-	// fmt.Println(req.URL)
-	// responseData, _ := ioutil.ReadAll(resp.Body)
-	// fmt.Println(string(responseData))
-
 	if v != nil {
 		if w, ok := v.(io.Writer); ok {
 			io.Copy(w, bytes.NewBuffer(*vkResponse))
@@ -134,13 +139,13 @@ func parseVkResponse(r *http.Response) (*json.RawMessage, error) {
 	envelope := new(vkResponseEnvelope)
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error reading response: %s", err.Error())
 	}
 
 	if data != nil {
 		err = json.Unmarshal(data, envelope)
 		if err != nil {
-			return nil, err
+			return nil, ErrInvalidJson
 		}
 
 		if envelope.Error != nil {
@@ -163,4 +168,9 @@ func (c *VkClient) Execute(code string, v interface{}) error {
 
 	_, err = c.Do(req, v)
 	return err
+}
+
+func (c *VkClient) AddCaptchaToTheNextRequest(sid, code string) {
+	c.captchaSid = sid
+	c.captchaCode = code
 }
