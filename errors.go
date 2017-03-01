@@ -8,19 +8,25 @@ import (
 
 const (
 	// error codes
-	codeAuthFailed      = 5
-	codeTooManyRequests = 6
-	codeFloodControl    = 9
-	codeCaptchaNeeded   = 14
-	codeNeedValidation  = 17
+	codeAuthFailed          = 5
+	codeTooManyRequests     = 6
+	codeFloodControl        = 9
+	codeInternalServerError = 10
+	codeCaptchaNeeded       = 14
+	codeAccessDenied        = 15
+	codeNeedValidation      = 17
+	codeAudioAccessDenied   = 201
 )
 
 var (
-	ErrTooManyRequests = errors.New("too many requests")
-	ErrNeedValidation  = errors.New("token needs validation")
-	ErrAuthFailled     = errors.New("authorization failed")
-	ErrFloodControl    = errors.New("flood control")
-	ErrInvalidJson     = errors.New("invalid json response")
+	ErrTooManyRequests     = errors.New("too many requests")
+	ErrNeedValidation      = errors.New("token needs validation")
+	ErrAuthFailled         = errors.New("authorization failed")
+	ErrInternalServerError = errors.New("internal server error")
+	ErrFloodControl        = errors.New("flood control")
+	ErrInvalidJson         = errors.New("invalid json response")
+	ErrAccessDenied        = errors.New("access denied")
+	ErrAudioAccessDenied   = errors.New("access to audio denied")
 )
 
 type VkError struct {
@@ -80,6 +86,8 @@ func (e *ErrCaptchaNeeded) Error() string {
 
 func castError(genericErr *VkError) error {
 	switch genericErr.Code {
+	case codeInternalServerError:
+		return ErrInternalServerError
 	case codeTooManyRequests:
 		return ErrTooManyRequests
 	case codeNeedValidation:
@@ -88,6 +96,10 @@ func castError(genericErr *VkError) error {
 		return ErrAuthFailled
 	case codeFloodControl:
 		return ErrFloodControl
+	case codeAccessDenied:
+		return ErrAccessDenied
+	case codeAudioAccessDenied:
+		return ErrAccessDenied
 	case codeCaptchaNeeded:
 		return &ErrCaptchaNeeded{
 			Method:     genericErr.vkMethod(),
