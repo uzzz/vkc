@@ -50,7 +50,7 @@ func (u *User) IdBytes() []byte {
 	return buf.Bytes()
 }
 
-func (u *User) IsDeactivated() bool {
+func (u *User) IsDeleted() bool {
 	return u.Deactivated == "deleted"
 }
 
@@ -59,7 +59,7 @@ func (u *User) IsBanned() bool {
 }
 
 func (u *User) IsUnavailable() bool {
-	return u.IsDeactivated() || u.IsBanned()
+	return u.IsDeleted() || u.IsBanned()
 }
 
 type usersService struct {
